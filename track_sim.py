@@ -64,7 +64,6 @@ class Blob(object):
 class Controller(object):
 
     def __init__(self,Kp,Ki=0,Kd=0,time=False):
-        #self.pos=np.array(pos);
         self.use_time=time;
 
         self.Kp=Kp;
@@ -89,8 +88,7 @@ class Controller(object):
             if self.use_time:
                 import time
                 self.time=time.time()
-        print('dt');
-        print(dt)
+        
         self.der=self.error/dt;
         return np.array(self.Kp*self.error+self.Ki*self.integral+self.Kd*self.der);
         #self.pos=(self.pos+comp).astype(int);
