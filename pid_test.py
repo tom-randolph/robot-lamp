@@ -7,7 +7,7 @@ setpoint=341.4
 pos=0
 dt=.01
 
-PID=Controller(.5,1,.005)
+PID=Controller(.5,1,.005,time=True)
 
 ts=np.arange(0,1,dt)
 ys=[]
