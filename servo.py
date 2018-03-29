@@ -19,8 +19,10 @@ class ArduServo(object):
         except:
             raise;
     def write(self,pos):
-        assert pos in range(0,181);
+        if pos >150: pos =150;
+        if pos<90: pos =90;
         self.pos=pos;
+        print(pos);
         self.ser.write(bytearray([pos]));
 
 if __name__=="__main__":

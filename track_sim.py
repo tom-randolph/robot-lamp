@@ -90,7 +90,10 @@ class Controller(object):
                 self.time=time.time()
         
         self.der=self.error/dt;
-        return np.array(self.Kp*self.error+self.Ki*self.integral+self.Kd*self.der);
+        comp= np.array(self.Kp*self.error+self.Ki*self.integral+self.Kd*self.der);
+        print('comp')
+        print(comp)
+        return comp
         #self.pos=(self.pos+comp).astype(int);
         #return self.pos
     def reset(self):

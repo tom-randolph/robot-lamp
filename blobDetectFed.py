@@ -2,9 +2,15 @@ import cv2
 import numpy as np
 from track_sim import Camera,Controller
 import time
+from servo import ArduServo
 
-cam = Camera((200,200),(400,300))
-PID=Controller(.5,1,time=True)
+
+servo=ArduServo('/dev/ttyACM0')
+servo.open()
+servo.write(180)
+
+cam = Camera((400,400),(300,200))
+PID=Controller(.01,0.005,.01,time=True)
 capture = cv2.VideoCapture(0)
 capture.set(3,1000)
 capture.set(4,500)
@@ -33,7 +39,7 @@ while(1):
     # I used 120 in poor lighting, and I only drew a blob in pencil on some looseleaf and it worked fine
     # If you use a marker or something on white printer paper this will work even better
 
-    thresh = 40
+    thresh = 80
     gray[gray < thresh] = 0
     gray[gray > 0] = 255
 
@@ -56,14 +62,18 @@ while(1):
     try:
         try:pointD=keypoints[0].pt
         except: pointD=(0,0)
+        #print('point')
         #print(pointD)
         #cv2.rectangle(frame,tuple((np.array(pointD)-100).astype(int)),tuple((np.array(pointD)+100).astype(int)),(255,0,0),10)
         #print("good so far..")
+
         pic=cam.take_image(pointD)
-        print("pic")
-        print(pic)
+        #print("pic")
+        #print(pic)
         if pic is not False:
-            cam.update_rel(PID.compute(pic))
+            comp=PID.compute(pic)
+            #cam.update_rel(comp)
+            servo.write(servo.pos-int(.2*comp[1]))
         else:
             PID.reset()
     except:
@@ -77,4 +87,4 @@ while(1):
     # If its not working, try and adjust thresh
     # Replacing frame with gray to see the thresholded image will make this easier
 
-    cv2.waitKey(int(1000/5))
+    cv2.waitKey(1)
