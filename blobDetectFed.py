@@ -77,4 +77,4 @@ while(1):
     # If its not working, try and adjust thresh
     # Replacing frame with gray to see the thresholded image will make this easier
 
-    cv2.waitKey(int(1000/5))
+    cv2.waitKey(int(1000/1000))
