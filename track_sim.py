@@ -65,16 +65,14 @@ class Controller(object):
 
     def __init__(self,Kp,Ki=0,Kd=0,time=False):
         self.use_time=time;
-
         self.Kp=Kp;
         self.Ki=Ki;
         self.Kd=Kd;
         self.integral=None;
         self.der=None;
         self.error=None;
+
     def compute(self,error,dt=1):
-
-
         self.error=np.array(error);
         if self.integral is not None:
             self.integral=self.integral+self.error*dt;
@@ -88,11 +86,11 @@ class Controller(object):
             if self.use_time:
                 import time
                 self.time=time.time()
-        
         self.der=self.error/dt;
+        print('dt')
+        print(dt)
         return np.array(self.Kp*self.error+self.Ki*self.integral+self.Kd*self.der);
-        #self.pos=(self.pos+comp).astype(int);
-        #return self.pos
+
     def reset(self):
         if self.error is not None:
             self.integral=np.zeros(self.error.size)
