@@ -1,5 +1,6 @@
 # You need Tensorflow 1.7.0 to run this
-# Pip install from cmd on windows, must download pre-built pip binary for pi
+# Pip install from cmd on windows
+# Download pip binary from https://github.com/lhelontra/tensorflow-on-arm/releases for pi
 
 import tensorflow as tf
 import cv2
@@ -13,7 +14,7 @@ capture.set(15, -8.0)
 
 
 # Path to frozen_inference_graph.pb
-weightPath = 'C:\\Users\\Nate\\Anaconda3\\Lib\\site-packages\\tensorflow\\models\\research\\latestModel\\frozen_inference_graph.pb'
+weightPath = 'ADD_MODEL_PATH'
 
 
 # Load in the model
