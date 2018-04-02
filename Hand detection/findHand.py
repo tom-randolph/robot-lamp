@@ -1,3 +1,6 @@
+# You need Tensorflow 1.7.0 to run this
+# Pip install from cmd on windows, must download pre-built pip binary for pi
+
 import tensorflow as tf
 import cv2
 import numpy as np
