@@ -3,20 +3,21 @@ import numpy as np
 from track_sim import Camera,Controller
 import time
 
-cam = Camera((200,200),(400,300))
+#setup virtual camera frame
+cam = Camera((200,200),(320,240))
+#include PID controller
 PID=Controller(.5,1,time=True)
+
+#setup cv video stream from webcam
 capture = cv2.VideoCapture(0)
-capture.set(3,1000)
-capture.set(4,500)
-#capture.set(CV_CAP_PROP_FPS,1) #framerate
+
+#setup height and width
+capture.set(3,640)
+capture.set(4,480)
+
 capture.set(15, -8.0)
 
-colors = {
-    "red":(0,0,255),
-    "yellow":(0,255,255),
-    "green":(0,255,0)
-    }
-
+#video capture loop
 while(1):
 
     # video feed (image captured in frame)
@@ -54,12 +55,9 @@ while(1):
     detector = cv2.SimpleBlobDetector_create(params)
     keypoints = detector.detect(gray)
     try:
-        try:pointD=keypoints[0].pt
-        except: pointD=(0,0)
-        #print(pointD)
-        #cv2.rectangle(frame,tuple((np.array(pointD)-100).astype(int)),tuple((np.array(pointD)+100).astype(int)),(255,0,0),10)
-        #print("good so far..")
-        pic=cam.take_image(pointD)
+        try:point=keypoints[0].pt
+        except: point=(0,0)
+        pic=cam.take_image(point)
         print("pic")
         print(pic)
         if pic is not False:
@@ -69,6 +67,8 @@ while(1):
     except:
         raise
     cam.render(frame)
+
+    #draw the detected blobs over the frames
     frame = cv2.drawKeypoints(frame, keypoints, np.array([]), (255,0,255),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
     gray = cv2.drawKeypoints(gray, keypoints, np.array([]), (255,0,255),cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
     cv2.imshow('detected circles', frame)
@@ -77,4 +77,5 @@ while(1):
     # If its not working, try and adjust thresh
     # Replacing frame with gray to see the thresholded image will make this easier
 
+    #you can adjust this parameter to manually set stream framerate
     cv2.waitKey(int(1000/1000))

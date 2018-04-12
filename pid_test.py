@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
 from track_sim import Controller
 import numpy as np
-#from scipy.integrate import odeint
 
-setpoint=341.4
+#small playground script to test different PID values, not very usefully without model of system.
+
+setpoint=340
 pos=0
 dt=.01
 
