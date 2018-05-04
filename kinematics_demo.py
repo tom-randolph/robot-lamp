@@ -55,9 +55,11 @@ def runGame():
     arm3=Arm(arm1.end,theta2)
     pix_to_inches(arm1.end)
     point=[10,10]
-    point=pygame.mouse.get_pos()
+    # point=pygame.mouse.get_pos()
     i=0
     lamp=Lamp()
+    # pygame.time.delay(2000)
+    print(point)
     while True: # main game loop
 
         for event in pygame.event.get():
@@ -66,6 +68,8 @@ def runGame():
         keys=pygame.key.get_pressed()
 
         point=pix_to_inches(pygame.mouse.get_pos())
+        # point+=command_distance(pix_to_inches(pygame.mouse.get_pos()),lamp.distal.end)
+
         # point+=np.array(pygame.mouse.get_rel())
 
         if keys[pygame.K_ESCAPE]:
@@ -78,9 +82,13 @@ def runGame():
         DISPLAYSURF.fill(BGCOLOR)
         pygame.draw.circle(DISPLAYSURF,RED,inches_to_pix(point),int(lamp.proximal.length*40),3)
         pygame.draw.circle(DISPLAYSURF,GREEN,inches_to_pix(base),int(lamp.proximal.length*40),3)
-        pygame.draw.circle(DISPLAYSURF,BLUE,inches_to_pix((0,0)),int(2*40*8.25),3)
+
+        pygame.draw.circle(DISPLAYSURF,BLUE,inches_to_pix((0,0)),int(2*40*10),3)
         lamp.draw()
         lamp.display_angles()
+        lamp.display_pos()
+
+        pygame.draw.circle(DISPLAYSURF,DARKGREEN,inches_to_pix(point),5)
 
         millis_old=millis
         millis= pygame.time.get_ticks()
@@ -106,10 +114,29 @@ def inches_to_pix(inches):
     #pix[1]*=-1
     return pix
 
-class Arm(object):
+def command_distance(mouse,end_effector):
+
+    mouse=np.array(mouse)
+    end_effector=np.array(end_effector)
+    dist=mouse-end_effector
+    print(dist)
+    # if dist<12:
+    #     if dist<4:
+    #         cmd=-(-.1,-.1)
+    #     elif dist>8:
+    #         cmd=(.1,.1)
+    if False is True:
+        pass
+    else: cmd=(0,0)
+    return np.array(cmd)
+
+
+
+
+class Arm():
 
     '''A class to describe a segment of the robot arm'''
-    length=8.25
+    length=10
     scale=40
 
     def __init__(self,base,theta):
@@ -167,24 +194,37 @@ class Lamp():
             thetaMid=np.arctan(y/x)
             ySide=np.sqrt(radius**2-dist**2)
             phi=np.arctan(ySide/dist)
-            self.beta=thetaMid+phi
-            self.alpha=-2*phi
-            print("arm")
-            print(self.beta)
-            print(self.alpha)
+            self.beta=np.around(thetaMid+phi,2)
+            self.alpha=np.around(-2*phi,2)
+            # print("arm")
+            # print(self.beta)
+            # print(self.alpha)
         self.proximal.update(self.base,self.beta)
         self.distal.update_rel(self.proximal,self.alpha)
     def display_angles(self):
-        aSurf = BASICFONT.render('Alpha:  %s ' % (np.around(np.degrees(self.alpha),2)), True, WHITE)
+        aSurf = BASICFONT.render('Alpha:  %s ' % (np.around((PI/2+self.alpha),2)), True, WHITE)
         aRect = aSurf.get_rect()
         aRect.topleft = inches_to_pix(self.base)+np.array((30,10))
         DISPLAYSURF.blit(aSurf, aRect)
-        bSurf = BASICFONT.render('Beta: %s' % (np.around(np.degrees(self.beta),2)), True, WHITE)
+        bSurf = BASICFONT.render('Beta: %s' % (np.around((self.beta),2)), True, WHITE)
+        bRect = bSurf.get_rect()
+        bRect.topleft = aRect.bottomleft
+        DISPLAYSURF.blit(bSurf, bRect)
+    def display_pos(self):
+        aSurf = BASICFONT.render('x:  %s ' % (np.around((self.distal.end[0]),2)), True, WHITE)
+        aRect = aSurf.get_rect()
+        aRect.topleft = inches_to_pix(self.base)+np.array((400,10))
+        DISPLAYSURF.blit(aSurf, aRect)
+        bSurf = BASICFONT.render('y: %s' % (np.around((self.distal.end[1]),2)), True, WHITE)
         bRect = bSurf.get_rect()
         bRect.topleft = aRect.bottomleft
         DISPLAYSURF.blit(bSurf, bRect)
 
 
+class Motor():
+
+    def __init__(self):
+        pass
 
 
 if __name__ == '__main__':
